@@ -8,6 +8,7 @@ public class UserController {
 
 	@RequestMapping(value="demoJump")
 	public String demoJump(){
+		
 		return "test1";
 	}
 }
