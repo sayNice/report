@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util.xsd
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	<mvc:annotation-driven />
+	<context:component-scan base-package="cn.ac.ucas.demo.controller">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!-- <mvc:resources location="/static/" mapping="/static/**"/>
+	<mvc:resources location="/export/" mapping="/export/**"/>
+	<mvc:resources location="/doc/" mapping="/doc/**"/> -->
+	
+	<!-- i18n -->
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<!-- 国际化信息所在的文件名 -->                     
+		<property name="basename" value="messages" />   
+		<!-- 如果在国际化资源文件中找不到对应代码的信息，就用这个代码作为名称  -->               
+		<property name="useCodeAsDefaultMessage" value="true" />           
+	</bean>  
+	 
+	<!-- <mvc:interceptors>  
+		<mvc:interceptor>  	       
+    		<mvc:mapping path="/**"/>过滤全部请求   
+    		<mvc:exclude-mapping path="/user/dispatchSepLogin"/>不包括的  
+        	<mvc:exclude-mapping path="/user/sepLogout"/>不包括的  
+        	<mvc:exclude-mapping path="/user/sepLogin"/>不包括的
+        	<mvc:exclude-mapping path="/main/*"/>不包括的
+        	<mvc:exclude-mapping path="/logintab/**"/>不包括的
+        	<mvc:exclude-mapping path="/registrationProjectTab/**"/>不包括的
+        	<mvc:exclude-mapping path="/studentBaseInfoTab/**"/>不包括的
+        	<mvc:exclude-mapping path="/studentBaseInfoTabSc/**"/>不包括的
+        	<mvc:exclude-mapping path="/remark/**"/>不包括的
+        	<mvc:exclude-mapping path="/apply/**"/>不包括的
+        	<mvc:exclude-mapping path="/CampQuery/*"/>不包括的
+        	<mvc:exclude-mapping path="/recruitQuery/**"/>不包括的
+        	<mvc:exclude-mapping path="/registrateQuery/**"/>不包括的
+        	<mvc:exclude-mapping path="/registrateScQuery/**"/>不包括的
+        	<mvc:exclude-mapping path="/resultQuery/**"/>不包括的
+        	
+        	<mvc:exclude-mapping path="/unit/totip"/>不包括的
+        	<mvc:exclude-mapping path="/stu/**"/>
+        	<mvc:exclude-mapping path="/unit/**"/>
+	      	<bean class="cn.ac.ucas.demo.util.interceptor.SepPowerInterceptor" />  
+	    </mvc:interceptor>
+	      
+	    国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 
+	    <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" /> 
+	     
+	</mvc:interceptors>  --> 
+
+	<!-- <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />  -->
+	
+	<!-- <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />   -->    
+	 
+	
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<!-- <property name="contentNegotiationManager" ref="cnManager" /> -->
+
+		<property name="viewResolvers">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<!-- Example: a logical view name of 'vets' is mapped to '/WEB-INF/jsp/vets.jsp' -->
+					<property name="prefix" value="/WEB-INF/views/" />
+					<property name="suffix" value=".jsp" />
+				</bean>
+				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<property name="marshaller">
+						<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+							<property name="autodetectAnnotations" value="true" />
+						</bean>
+					</property>
+
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<!-- <bean id="cnManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="true" />
+		<property name="ignoreAcceptHeader" value="true" />
+		<property name="defaultContentType" value="text/html" />
+
+		<property name="mediaTypes">
+			<map>
+				<entry key="html" value="text/html" />
+				<entry key="xml" value="application/xml" />
+				<entry key="json" value="application/json" />
+				<entry key="atom" value="application/atom+xml" />
+			</map>
+		</property>
+	</bean> -->
+	<mvc:annotation-driven >  
+    <!-- 消息转换器 -->  
+    <mvc:message-converters register-defaults="true">  
+      <bean class="org.springframework.http.converter.StringHttpMessageConverter">  
+        <property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>  
+      </bean>  
+    </mvc:message-converters>  
+  </mvc:annotation-driven>
+  
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- set the max upload size100MB -->
+		<property name="maxUploadSize">
+			<value>104857600</value>
+		</property>
+		<property name="defaultEncoding" value="UTF-8" /> 
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
+
+	<import resource="./application.xml" />
+</beans>  
